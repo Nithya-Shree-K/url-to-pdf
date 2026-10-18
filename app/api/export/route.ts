@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+
+// Stealth plugin initialize seigirom
+puppeteer.use(StealthPlugin());
 
 export async function POST(req: NextRequest) {
   let browser;
@@ -23,37 +27,17 @@ export async function POST(req: NextRequest) {
         "--no-first-run",
         "--no-zygote",
         "--disable-gpu",
-        "--disable-blink-features=AutomationControlled",
       ],
     });
 
     const page = await browser.newPage();
-
-    // Real Chrome User-Agent
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    );
-
-    // Automation flag 'navigator.webdriver' hide seigirom
-    await page.evaluateOnNewDocument(() => {
-      Object.defineProperty(navigator, "webdriver", {
-        get: () => false,
-      });
-    });
-
-    // Browser headers
-    await page.setExtraHTTPHeaders({
-      "Accept-Language": "en-US,en;q=0.9",
-      "Upgrade-Insecure-Requests": "1",
-    });
-
     await page.setViewport({ width: 1280, height: 800 });
 
     // Page navigation
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
 
-    // Page render aaga chinna delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Content load aaga chinna delay
+    await new Promise((resolve) => setTimeout(resolve, 2500));
 
     if (format === "pdf") {
       const pdfBuffer = await page.pdf({
