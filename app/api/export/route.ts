@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
     });
 
     const page = await browser.newPage();
+    await page.setUserAgent(
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+);
     await page.setViewport({ width: 1280, height: 800 });
 
     // User-agent set panrom (websites block pannama irukka)
